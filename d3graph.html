@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/d3@5.16.0/dist/d3.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="svgContainer">
+
+    </div>
+<script>
+
+d3.json("miserables.json").then(function(data) {
+    function color() {
+        const scale = d3.scaleOrdinal(d3.schemeCategory10);
+        return d => scale(d.group);
+    }
+
+    const width = 600, height = 300;
+
+    let num = data.nodes.length
+    let radius = width/5
+    let angle = (Math.PI * 2) / num
+    let newNodes = data.nodes.map(function(d, i) {
+        d.x = Math.cos(angle * i) * radius
+        d.y = Math.sin(angle * i) * radius
+        return d
+    })
+
+    let newd = data.links.map(function(dum, i) {
+
+        dum.id = i
+        let source = newNodes.filter(function(d) {if(d.id === dum.source) return d})
+        dum.source = {}
+        dum.source.id = source[0].id
+        dum.source.x = source[0].x
+        dum.source.y = source[0].y
+
+        let target = newNodes.filter(function(d) {if(d.id === dum.target) return d})
+        dum.target = {}
+        dum.target.id = target[0].id
+        dum.target.x = target[0].x
+        dum.target.y = target[0].y
+        return dum
+    });
+
+    const svg = d3.select('#svgContainer').append("svg")
+        .attr("viewBox", [0, 0, width, height]);
+
+    const link = svg.append("g")
+    .attr('transform', 'translate('+ width/2 +', '+ height/2 +')')
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("line")
+        .data(newd)
+        .join("line")
+        .attr("stroke-width", d => Math.sqrt(d.value));
+
+    const node = svg.append("g")
+    .attr('transform', 'translate('+ width/2 +', '+ height/2 +')')
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .selectAll("circle")
+        .data(newNodes)
+        .join("circle")
+        .attr("r", 5)
+        .attr("fill", color)
+        .on('mouseover', function(da) {
+            let source = data.links.filter(function(dum) {if(da.id === dum.source.id) return dum})
+            link.attr('stroke', function(d) {
+                for (let item of source) {
+                    if(item.id === d.id) {
+                        return 'red'
+                    }
+                }
+            })
+        })
+
+    node.append("title")
+        .text(d => d.id);
+
+    link.attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+    node.attr("cx", d => d.x)
+        .attr("cy", d => d.y);
+    });
+
+</script>
+</body>
+</html>
