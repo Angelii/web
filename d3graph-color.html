@@ -402,14 +402,14 @@ d3.csv("net.csv").then(function(linking) {
         countLinks.push(obj)
     }
   
-    for(let i in countLinks) {
-        for(let j in countLinks) {
-            if((countLinks[i].a === countLinks[j].b) && (countLinks[i].b === countLinks[j].a)) {
-                countLinks[j].a = countLinks[i].a
-                countLinks[j].b = countLinks[i].b
-            }
-        }
-    }
+    // for(let i in countLinks) {
+    //     for(let j in countLinks) {
+    //         if((countLinks[i].a === countLinks[j].b) && (countLinks[i].b === countLinks[j].a)) {
+    //             countLinks[j].a = countLinks[i].a
+    //             countLinks[j].b = countLinks[i].b
+    //         }
+    //     }
+    // }
 
     let uniqLinks = [];
         for(let i in countLinks) {
@@ -538,8 +538,12 @@ d3.csv("net.csv").then(function(linking) {
     document.getElementById("plan15").addEventListener('click', plan)
     document.getElementById("plan16").addEventListener('click', plan)
     function plan(item) {
-        // console.log(planList.length, '???')
-        let topUniqLinks = planList[item.target.value-1].slice(0,10)
+        
+        // if(planList[item.target.value-1].count >=3) {
+        //     let topUniqLinks = .slice(0,10)
+        // }
+        let topUniqLinks = planList[item.target.value-1].filter(d=>(d.count >=2))
+        console.log(planList[item.target.value-1], '???')
         link.attr("x1", function(d) {
             for(let i in topUniqLinks) {
                 if(((d.source.id === topUniqLinks[i].el.a) && (d.target.id === topUniqLinks[i].el.b))
