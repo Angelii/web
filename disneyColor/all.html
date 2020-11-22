@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/d3@5.15.0/dist/d3.min.js"></script>
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            padding: 20px 40px;
+        }
+        #all-title {
+            color: #fff;
+            margin: 0;
+        }
+
+        #video-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 200px;
+            display: none;
+        }
+
+        #img-number {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            color: #fff;
+            display: none;
+            text-align: right;
+        }
+
+        #allAnimateWrap {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1 id="all-title">DISNEY COLORS</h1>
+<a href="index.html"><- see Disney cases</a>
+<div id="allAnimateWrap">
+</div>
+<img id="video-img" src="" alt="">
+<span id="img-number"></span>
+<script>
+const width = 1800;
+const height = 1200;
+const margin = { top: 20, right: 30, bottom: 30, left: 60 };
+// var filePath = ["bx.csv", "zipto.csv", "db.csv", "bx2.csv"]
+var fileImgName = ['1937-snowWhite', '1942-bambi', '1950-Cinderella','1955-Lady&Tramp', '1959-sleepingBeauty',
+'1988-roger','1989-mermaid',
+'1991-beauty&beast', '1992-aladdin', '1994-lionKing', '1995-toyStory',
+'1999-fantasia', '1999-mountain', '2000-tigger', '2001-monster', '2002-stitch', '2003-dory', '2004-car2',
+'2004-lion3','2004-superman', '2005-honey', '2006-car', '2007-ratatouille', '2008-robot', '2009-prin&frog',
+'2009-fly-house', '2010-hair', '2011-honey', '2012-brave', '2012-wreck-it','2013-frozen','2013-monsters-uni', '2014-hero', '2015-inside-out', '2016-ocean',
+'2016-zootopia', '2017-coco', '2018-superman2','2018-wreck-it2', '2019-frozen2']
+// var videoName = ["x", "Zootopia", "Hero 6", "FrozenII"]
+
+const svg = d3
+        .select('#allAnimateWrap')
+        .append('svg')
+        .attr('class', 'mainBubbleSVG')
+        .attr('width', width)
+        .attr('height', height);
+
+function drawSvg(i, y, fileImgName) {
+    let filePath = './csv/' + fileImgName + '.csv'
+    // console.log(filePath)
+    let img = document.getElementById('video-img')
+    let imgNumber = document.getElementById('img-number')
+        // 画布
+        d3.csv(filePath).then(function(data) {
+
+        let g = svg.append('g')
+        .attr('transform', 'translate(130, 0)')
+
+        g.append('text')
+        .text(fileImgName)
+        .style('font-size', '12px')
+        .attr("x",-130)
+        .attr('y',y+15)
+        // .style('stroke', '#fff')
+        .style('fill', '#fff')
+
+        g.selectAll('rect')
+        .data(data).enter()
+        .append('rect')
+        .attr('x', d => Number(d.x)*5)
+        .attr('y', y)
+        .attr('width', '5px')
+        .attr('height', '20px')
+        .attr('r', 10)
+        .style('opacity', .8)
+        .attr('fill', function(d) {
+            return 'rgb('+ Number(d.r)+ ',' + Number(d.g)+ ',' + Number(d.b) + ')'
+        })
+        .on('mouseover', function(d) {
+         
+            imgNumber.innerHTML = d.x
+           
+            img.src = './img/' + fileImgName + '/' + Number(d.x) + '.jpg'
+            d3.select(this).attr('stroke', 'white')
+            d3.select(this).attr('stroke-width', 1)
+            // console.log(d3.event,'???')
+            img.style.left = d3.event.pageX + 5 + 'px'
+            img.style.top = d3.event.pageY + 5 + 'px'
+            img.style.display = 'block'
+
+            imgNumber.style.left = d3.event.pageX + 370 + 'px'
+            imgNumber.style.top = d3.event.pageY + 180 + 'px'
+            imgNumber.style.display = 'block'
+            // alert(Number(d.x), 'd')
+        })
+        .on('mouseout', function() {
+            d3.select(this).attr('stroke', 'none')
+            d3.select(this).attr('stroke-width', 0)
+            img.style.display = 'none'
+            imgNumber.style.display = 'none'
+        })
+        
+    });
+}
+for(let i = 0; i < fileImgName.length; i++) {
+    drawSvg(i, i*24, fileImgName[i])
+}
+    
+
+</script>
+</body>
+</html>

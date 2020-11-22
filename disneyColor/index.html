@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disney Color</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@5.15.0/dist/d3.min.js"></script>
+<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            background-color: black;
+            padding: 20px 40px;
+        }
+        #video-img {
+            width: 500px;
+            /* height: 210px; */
+            position: absolute;
+            /* top: -35px; */
+        }
+
+        .img-box {
+            width: 500px;
+            height: 265px;
+            overflow: hidden;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 10px;
+        }
+
+        #title {
+            color: #fff;
+            margin: 0;
+            /* padding: 0 40px; */
+        }
+
+        #svgContainer {
+            margin-top: 20px;
+        }
+
+        .nav-tabs {
+            border-bottom: 1px solid transparent;
+            margin-top: 30px;
+        }
+
+        .nav-tabs > li > a {
+            color:#fff
+        }
+
+        .ds-container {
+            /* padding: 20px 40px; */
+        }
+        ul,li {
+            cursor: pointer;
+            color: #fff;
+            /* list-style-type: none; */
+        }
+    </style>
+</head>
+<body>
+<h1 id="title">DISNEY CASES</h1>
+<a href="all.html">-> see Disney colors</a>
+<div class="ds-container">
+    <div class="img-box"><img id="video-img" src="" alt=""></div>
+    <!-- Nav tabs -->
+    <ul id="myTabs" class="nav nav-tabs" role="tablist">
+      <li id="snw"role="presentation"><a href="#1937-snowWhite" aria-controls="snw" role="tab" data-toggle="tab">1937-Snow White</a></li>
+      <li id="cinde"role="presentation" ><a href="#1950-Cinderella" aria-controls="cinde" role="tab" data-toggle="tab">1950-Cinderella</a></li>
+      <li id="bt&beast"role="presentation" ><a href="#1991-beauty&beast" aria-controls="bt&beast" role="tab" data-toggle="tab">1991-beauty&beast</a></li>
+      <!-- <li id="lk"role="presentation" ><a href="#1994-lionKing" aria-controls="lk" role="tab" data-toggle="tab">1994-lionKing</a></li> -->
+      <li id="ts"role="presentation" ><a href="#1995-toyStory" aria-controls="ts" role="tab" data-toggle="tab">1995-toyStory</a></li>
+      <!-- <li id="p&f"role="presentation" ><a href="#2009-prin&frog" aria-controls="p&f" role="tab" data-toggle="tab">2009-prin&frog</a></li> -->
+      <li id="bx"role="presentation"  ><a href="#2010-hair" aria-controls="bx" role="tab" data-toggle="tab">2010-hair</a></li>
+      <li id="bx"role="presentation"  class="active"><a href="#2013-frozen" aria-controls="bx" role="tab" data-toggle="tab">2013-Frozen I</a></li>
+      
+      <li id="bx"role="presentation"  ><a href="#2014-hero" aria-controls="bx" role="tab" data-toggle="tab">2014-hero</a></li>
+      
+      <li id="bx"role="presentation"  ><a href="#2016-zootopia" aria-controls="bx" role="tab" data-toggle="tab">2016-zootopia</a></li>
+      <li id="bx"role="presentation"  ><a href="#2016-ocean" aria-controls="bx" role="tab" data-toggle="tab">2016-ocean</a></li>
+      <!-- <li id="bx2" role="presentation"><a href="#2019-frozen2" aria-controls="bx2" role="tab" data-toggle="tab">Frozen II</a></li>
+      <li id="zipto" role="presentation"><a href="#2016-zootopia" aria-controls="zipto" role="tab" data-toggle="tab">Zootopia</a></li>
+      <li id="db" role="presentation"><a href="#2014-hero" aria-controls="db" role="tab" data-toggle="tab">Big Hero 6</a></li> -->
+    </ul>
+    <ul id="hsvTab">
+        <li id="hsvTab2h" class="tab-menus">h 色相</li>
+        <li id="hsvTab2s" class="tab-menus">s 饱和度</li>
+        <li id="hsvTab2v" class="tab-menus">v 明度</li>
+    </ul>
+
+      <!-- Tab panes -->
+      <div id="svgContainer">
+     </div>
+</div>
+
+<script>
+const width = 1400;
+const height = 300;
+const margin = { top: 20, right: 30, bottom: 30, left: 60 };
+var filePath = "./csv/rr2013-frozen.csv"
+var fileImgName = '2013-frozen'
+var col = 'h'
+
+for (let i = 0; i < document.getElementById('myTabs').childNodes.length; i++)  {
+    document.getElementById('myTabs').childNodes[i].addEventListener('click', function(e) {
+        filePath = './csv/rr' + e.target.toString().split('#')[1] + '.csv'
+        fileImgName = e.target.toString().split('#')[1]
+        console.log(fileImgName, filePath)
+        d3.select('.mainBubbleSVG').remove()
+        drawSvg(col)
+    })
+}
+
+    document.getElementsByClassName('tab-menus')[0].style.color = 'steelblue'
+
+    for (let i = 0; i < document.getElementById('hsvTab').childNodes.length; i++)  {
+        document.getElementById('hsvTab').childNodes[i].addEventListener('click', function(e) {
+            for (let i = 0; i < document.getElementsByClassName('tab-menus').length; i++)  {
+                console.log(document.getElementsByClassName('tab-menus')[i])
+                document.getElementsByClassName('tab-menus')[i].style.color = '#ffffff'
+            }
+            // console.log(e.target, 'e.target')
+            e.target.style.color = 'steelblue'
+           
+            if (e.target.id === 'hsvTab2h') {
+                col = 'h'
+            } else if (e.target.id === 'hsvTab2s') {
+                col = 's'
+            } else if (e.target.id === 'hsvTab2v') {
+                col = 'v'
+            }
+            d3.select('.mainBubbleSVG').remove()
+            drawSvg(col)
+        })
+    }
+
+    function drawSvg(col) {
+        // 画布
+        const svg = d3
+        .select('#svgContainer')
+        .append('svg')
+        .attr('class', 'mainBubbleSVG')
+        .attr('width', width)
+        .attr('height', height);
+        
+        d3.csv(filePath).then(function(data) {
+    //    console.log([d3.extent(data, d => Number(d.x))]); // [{"Hello": "world"}, …]
+        //比例尺
+        const x = d3
+        .scaleLinear()
+        .domain(d3.extent(data, d => Number(d.x)))
+        .nice()
+        .range([margin.left, width - margin.right]);
+
+        const y = d3
+            .scaleLinear()
+            .domain(d3.extent(data, d => Number(d[col])))
+            .nice()
+            .range([height - margin.bottom, margin.top]);
+
+        //坐标轴
+        const xAxis = g =>
+            g
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x))
+            .call(() => g.select('.domain').remove())
+            // .call(() =>
+            //     g
+            //     .append('text')
+            //     .attr('x', width - margin.right)
+            //     .attr('y', -4)
+            //     .attr('color', '#fff')
+            //     .attr('font-weight', 'bold')
+            //     .attr('text-anchor', 'end')
+            //     .text(data.x)
+            // );
+
+        const yAxis = g =>
+        g
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y))
+        .call(() => g.select('.domain').remove())
+
+        // .call(() =>
+        //     g
+        //     .select('.tick:last-of-type text')
+        //     .clone()
+        //     .attr('x', 4)
+        //     .attr('text-anchor', 'start')
+        //     .attr('font-weight', 'bold')
+        //     .text(data.y)
+        // );
+
+
+
+              //添加坐标轴
+        svg.append('g').call(xAxis)
+        .style('color', '#fff');
+
+        svg.append('g').call(yAxis)
+        .style('color', '#fff');;
+
+
+        let lineGap = null
+        for(let i = 0; i < 9; i++) {
+            if (col === 'h') {
+                lineGap = 50*i
+            } else {
+                lineGap = 0.5*i
+            }
+            let line = d3.line().x(d => x(d.x)).y(d => y(lineGap))
+            svg
+            .append('g')
+            .append('path')
+            .attr('d' , line(data))
+            .attr('stroke', '#5b5b5b')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', 2)
+        }
+          //打点
+        svg
+        .append('g')
+        .selectAll('.circle')
+        .data(data).enter()
+        .append('circle')
+        .attr('class', 'circle')
+        .attr('cx', d => x(Number(d.x)))
+        .attr('cy', d => y(Number(d[col])))
+        .attr('r', 5)
+        .style('opacity', .8)
+        .attr('fill', function(d) {
+            return 'rgb('+ Number(d.r)+ ',' + Number(d.g)+ ',' + Number(d.b) + ')'
+        })
+        .on('mouseover', function(d) {
+            let img = document.getElementById('video-img')
+            img.src = './img/rr' + fileImgName + '/' + Number(d.x) + '.jpg'
+            d3.select(this).attr('stroke', 'white')
+            d3.select(this).attr('stroke-width', 1)
+            // alert(Number(d.x), 'd')
+        })
+        .on('mouseout', function() {
+            d3.select(this).attr('stroke', 'none')
+            d3.select(this).attr('stroke-width', 0)
+        })
+
+        // console.log(d3.select('circle'), 'circle')
+        // d3.selectAll('circle').attr('stroke', 'white')
+        // d3.selectAll('circle').attr('stroke-width', 1)
+        let img = document.getElementById('video-img')
+        img.src = './img/rr' + fileImgName + '/' + '51' + '.jpg'
+    });
+     
+    }
+    drawSvg('h')
+
+  
+var a = 10;
+	svg.append('circle')
+	.attr('x',10)
+</script>
+</body>
+</html>
