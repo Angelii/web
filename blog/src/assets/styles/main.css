@@ -1,0 +1,34 @@
+/* body {
+  color: red;
+  background-image: url('../images/bg.png');
+} */
+
+h1,h2,h3,p,small {
+  margin: 0 0 20px;
+  padding: 0
+}
+
+img {
+  width: 100%;
+  /* border-radius: 5px; */
+  display: block;
+  margin-bottom: 15px;
+  height: auto;
+}
+
+a:link {
+  color: #999;
+}
+
+a:visited {
+  color: #999;
+}
+
+a:hover {
+  color: #f07c9f
+}
+
+a:active {
+  color: #f07c9f
+}
+
